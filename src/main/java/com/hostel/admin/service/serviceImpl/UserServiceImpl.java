@@ -7,7 +7,6 @@ import com.hostel.admin.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,8 +32,8 @@ public class UserServiceImpl implements UserService {
         return userDtos;
     }
     @Override
-    public UserDto getUserByID(Long id) {
-        User user = userRepo.getById(id);
+    public UserDto getByEmail(String email) {
+        User user = userRepo.getByEmail(email);
         UserDto userDto = modelMapper.map(user,UserDto.class);
         return userDto;
     }
@@ -42,6 +41,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeUser(Long id) {
         userRepo.deleteById(id);
+    }
+
+    @Override
+    public UserDto isUserExist(com.hostel.admin.dto.login.UserDto user) {
+        String email = user.getEmail();
+        String password = user.getPassword();
+        User usergetted = userRepo.findByEmailAndPassword(email, password);
+        UserDto userDto = modelMapper.map(usergetted, UserDto.class);
+        return userDto;
     }
 
 }

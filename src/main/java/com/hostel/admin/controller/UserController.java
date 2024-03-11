@@ -6,12 +6,11 @@ import com.hostel.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/admin")
 public class UserController {
 
     @Autowired
@@ -27,6 +26,15 @@ public class UserController {
         }
     }
 
+    @PostMapping("/user/login")
+    public ResponseEntity<Object> checkUser(@RequestBody com.hostel.admin.dto.login.UserDto userDto) {
+        try {
+            UserDto user = userService.isUserExist(userDto);
+            return ResponseHandler.generateResponse("login successfull", HttpStatus.OK, user);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse("Invalid credentials", HttpStatus.UNPROCESSABLE_ENTITY, null);
+        }
+    }
     @GetMapping("/user")
     public ResponseEntity<Object> getUser() {
         try {
@@ -36,10 +44,11 @@ public class UserController {
             return ResponseHandler.generateResponse("unable to find users", HttpStatus.UNPROCESSABLE_ENTITY, null);
         }
     }
-    @GetMapping("/user/{id}")
-    public ResponseEntity<Object> getUser(Long id) {
+
+    @GetMapping("/user/{email}")
+    public ResponseEntity<Object> getUser(@PathVariable String email) {
         try {
-           UserDto users = userService.getUserByID(id);
+            UserDto users = userService.getByEmail(email);
             return ResponseHandler.generateResponse("User are listed", HttpStatus.OK, users);
         } catch (Exception e) {
             return ResponseHandler.generateResponse("unable to find user", HttpStatus.UNPROCESSABLE_ENTITY, null);
