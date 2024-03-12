@@ -8,9 +8,10 @@ import java.util.List;
 
 public interface UserService {
    UserDto saveUser(User user);
-   UserUpdateDto updateUser(String email, UserUpdateDto userDto);
+   UserUpdateDto updateUser(Long uid, UserUpdateDto userDto);
    List<UserDto> getUser();
    UserDto getByEmail(String email);
-   void removeUser(String email);
+   UserDto getByUid(Long uid);
+   Integer removeUser(Long uid);
    UserDto isUserExist(com.hostel.admin.dto.login.UserDto user);
 }

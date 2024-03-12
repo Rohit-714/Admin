@@ -6,6 +6,7 @@ import com.hostel.admin.entity.User;
 import com.hostel.admin.exception.UserAlreadyExistException;
 import com.hostel.admin.repository.UserRepo;
 import com.hostel.admin.service.UserService;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserUpdateDto updateUser(String email, UserUpdateDto userDto) {
-        User user = userRepo.getByEmail(email);
+    public UserUpdateDto updateUser(Long uid, UserUpdateDto userDto) {
+        User user = userRepo.getByUid(uid);
         if (user == null) {
             throw new UserAlreadyExistException("User does'nt exist.");
         }
@@ -55,10 +56,18 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = modelMapper.map(user,UserDto.class);
         return userDto;
     }
+    @Override
+    public UserDto getByUid(Long uid) {
+        User user = userRepo.getByUid(uid);
+        UserDto userDto = modelMapper.map(user,UserDto.class);
+        return userDto;
+    }
+
 
     @Override
-    public void removeUser(String email) {
-        userRepo.deleteByEmail(email);
+    @Transactional
+    public Integer removeUser(Long uid) {
+        return userRepo.deleteByUid(uid);
     }
 
     @Override

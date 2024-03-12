@@ -48,30 +48,30 @@ public class UserController {
         }
     }
 
-    @GetMapping("/user/{email}")
-    public ResponseEntity<Object> getUser(@PathVariable String email) {
+    @GetMapping("/user/{uid}")
+    public ResponseEntity<Object> getUser(@PathVariable Long uid) {
         try {
-            UserDto users = userService.getByEmail(email);
+            UserDto users = userService.getByUid(uid);
             return ResponseHandler.generateResponse("User are listed", HttpStatus.OK, users);
         } catch (Exception e) {
             return ResponseHandler.generateResponse("unable to find user", HttpStatus.UNPROCESSABLE_ENTITY, null);
         }
     }
 
-    @DeleteMapping("/user/{email}")
-    public ResponseEntity<Object> deleteUser(@PathVariable String email) {
+    @DeleteMapping("/user/{uid}")
+    public ResponseEntity<Object> deleteUser(@PathVariable Long uid) {
         try {
-            userService.removeUser(email);
+        Integer b =    userService.removeUser(uid);
             return ResponseHandler.generateResponse("User deleted by id", HttpStatus.OK, null);
         } catch (Exception e) {
             return ResponseHandler.generateResponse("User can't delete", HttpStatus.UNPROCESSABLE_ENTITY, null);
         }
     }
 
-    @PutMapping("/user/{email}")
-    public ResponseEntity<Object> updateUser(@PathVariable String email,@RequestBody UserUpdateDto userDto) {
+    @PutMapping("/user/{uid}")
+    public ResponseEntity<Object> updateUser(@PathVariable Long uid,@RequestBody UserUpdateDto userDto) {
         try {
-            UserUpdateDto savedUser = userService.updateUser(email,userDto);
+            UserUpdateDto savedUser = userService.updateUser(uid,userDto);
             return ResponseHandler.generateResponse("User Created", HttpStatus.OK, savedUser);
         } catch (Exception e) {
             return ResponseHandler.generateResponse("User unable to create", HttpStatus.UNPROCESSABLE_ENTITY, null);
