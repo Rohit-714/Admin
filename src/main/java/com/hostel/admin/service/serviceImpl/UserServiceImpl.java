@@ -1,7 +1,9 @@
 package com.hostel.admin.service.serviceImpl;
 
 import com.hostel.admin.dto.UserDto;
+import com.hostel.admin.dto.userupdate.UserUpdateDto;
 import com.hostel.admin.entity.User;
+import com.hostel.admin.exception.UserAlreadyExistException;
 import com.hostel.admin.repository.UserRepo;
 import com.hostel.admin.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -18,13 +20,29 @@ public class UserServiceImpl implements UserService {
     private UserRepo userRepo;
 
     @Override
-    public UserDto saveUpdateUser(UserDto userDto) {
-        User user = modelMapper.map(userDto, User.class);
+    public UserDto saveUser(User user) {
+   if(userRepo.getByEmail(user.getEmail())!=null)
+     {  throw new UserAlreadyExistException("User already exist.");}
         User usersaved = userRepo.saveAndFlush(user);
         UserDto usercreated = modelMapper.map(usersaved, UserDto.class);
         return usercreated;
     }
 
+    @Override
+    public UserUpdateDto updateUser(String email, UserUpdateDto userDto) {
+        User user = userRepo.getByEmail(email);
+        if (user == null) {
+            throw new UserAlreadyExistException("User does'nt exist.");
+        }
+        if(userDto.getEmail()!=null)user.setEmail(userDto.getEmail());
+        if(userDto.getPassword()!=null)user.setPassword(userDto.getPassword());
+        if (userDto.getName() != null) user.setName(userDto.getName());
+        if (userDto.getAddress() != null) user.setAddress(user.getAddress());
+        if (userDto.getCNo() != null) user.setCNo(userDto.getCNo());
+        User usersaved = userRepo.save(user);
+        UserUpdateDto usercreated = modelMapper.map(usersaved, UserUpdateDto.class);
+        return usercreated;
+    }
     @Override
     public List<UserDto> getUser() {
         List<User> users = userRepo.findAll();
@@ -39,8 +57,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void removeUser(Long id) {
-        userRepo.deleteById(id);
+    public void removeUser(String email) {
+        userRepo.deleteByEmail(email);
     }
 
     @Override

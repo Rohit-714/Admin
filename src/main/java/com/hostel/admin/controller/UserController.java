@@ -1,6 +1,8 @@
 package com.hostel.admin.controller;
 
 import com.hostel.admin.dto.UserDto;
+import com.hostel.admin.dto.userupdate.UserUpdateDto;
+import com.hostel.admin.entity.User;
 import com.hostel.admin.response.ResponseHandler;
 import com.hostel.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,12 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/user")
-    public ResponseEntity<Object> addUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<Object> addUser(@RequestBody User user) {
         try {
-            UserDto savedUser = userService.saveUpdateUser(userDto);
+            UserDto savedUser = userService.saveUser(user);
             return ResponseHandler.generateResponse("User Created", HttpStatus.OK, savedUser);
         } catch (Exception e) {
-            return ResponseHandler.generateResponse("User unable to create", HttpStatus.UNPROCESSABLE_ENTITY, null);
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY, user);
         }
     }
 
@@ -41,6 +43,7 @@ public class UserController {
             List<UserDto> users = userService.getUser();
             return ResponseHandler.generateResponse("Users are listed", HttpStatus.OK, users);
         } catch (Exception e) {
+
             return ResponseHandler.generateResponse("unable to find users", HttpStatus.UNPROCESSABLE_ENTITY, null);
         }
     }
@@ -55,20 +58,20 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/user/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
+    @DeleteMapping("/user/{email}")
+    public ResponseEntity<Object> deleteUser(@PathVariable String email) {
         try {
-            userService.removeUser(id);
+            userService.removeUser(email);
             return ResponseHandler.generateResponse("User deleted by id", HttpStatus.OK, null);
         } catch (Exception e) {
             return ResponseHandler.generateResponse("User can't delete", HttpStatus.UNPROCESSABLE_ENTITY, null);
         }
     }
 
-    @PatchMapping("/user")
-    public ResponseEntity<Object> updateUser(@RequestBody UserDto userDto) {
+    @PutMapping("/user/{email}")
+    public ResponseEntity<Object> updateUser(@PathVariable String email,@RequestBody UserUpdateDto userDto) {
         try {
-            UserDto savedUser = userService.saveUpdateUser(userDto);
+            UserUpdateDto savedUser = userService.updateUser(email,userDto);
             return ResponseHandler.generateResponse("User Created", HttpStatus.OK, savedUser);
         } catch (Exception e) {
             return ResponseHandler.generateResponse("User unable to create", HttpStatus.UNPROCESSABLE_ENTITY, null);
