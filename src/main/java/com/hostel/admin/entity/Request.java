@@ -19,8 +19,7 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String requestedBy;
-    private String requestedTo;
-    private String subject;
-    private String brief;
+    private String reason;
+    private String discription;
     private String feedback;
 }

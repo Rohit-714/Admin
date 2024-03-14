@@ -17,11 +17,11 @@ public class RequestController {
     @Autowired
     RequestService requestService;
 
-    @PostMapping("/request")
-    public ResponseEntity<Object> addRequest(@RequestBody Request requestDto) {
+    @PostMapping("/request/{uid}")
+    public ResponseEntity<Object> addRequest(@PathVariable Long uid,@RequestBody Request requestDto) {
         try {
 
-            RequestDto request = requestService.createRequest(requestDto);
+            RequestDto request = requestService.createRequest(requestDto,uid);
             return ResponseHandler.generateResponse("request added", HttpStatus.CREATED, request);
         } catch (Exception e) {
             return ResponseHandler.generateResponse("can't add request", HttpStatus.UNPROCESSABLE_ENTITY, null);

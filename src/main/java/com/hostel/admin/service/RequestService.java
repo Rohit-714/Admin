@@ -6,7 +6,7 @@ import com.hostel.admin.entity.Request;
 import java.util.List;
 
 public interface RequestService {
-    RequestDto createRequest(Request requestDto);
+    RequestDto createRequest(Request requestDto,Long uid);
 
     List<RequestDto> getRequest();
 

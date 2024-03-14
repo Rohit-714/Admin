@@ -2,7 +2,9 @@ package com.hostel.admin.service.serviceImpl;
 
 import com.hostel.admin.dto.RequestDto;
 import com.hostel.admin.entity.Request;
+import com.hostel.admin.entity.User;
 import com.hostel.admin.repository.RequestRepo;
+import com.hostel.admin.repository.UserRepo;
 import com.hostel.admin.service.RequestService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +20,15 @@ public class RequestServiceImpl implements RequestService {
     private ModelMapper modelMapper;
     @Autowired
     private RequestRepo requestRepo;
+    @Autowired
+    private UserRepo userRepo;
 
     @Override
-    public RequestDto createRequest(Request requestDto) {
+    public RequestDto createRequest(Request requestDto,Long uid) {
+        User user= userRepo.getByUid(uid);
         Request request = modelMapper.map(requestDto, Request.class);
         request.setFeedback("none");
+        request.setRequestedBy(user.getEmail());
         Request savedRequest = requestRepo.saveAndFlush(request);
         RequestDto requestCreated = modelMapper.map(savedRequest, RequestDto.class);
         return requestCreated;
